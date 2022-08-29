@@ -1,5 +1,5 @@
 
-from importlib.resources import contents
+
 import pyttsx3
 import speech_recognition as sr
 import datetime
@@ -11,7 +11,7 @@ from requests import get
 import requests
 from bs4 import BeautifulSoup
 import pywhatkit
-
+import smtplib
 
  
  
@@ -61,6 +61,13 @@ def takeCommand():
         print("Say that again please...")
         return "None"
     return query
+
+def sendEmail(to, content):
+    server = smtplib.SMTP('smtp.gmail.com,587')
+    server.ehlo()
+    server.starttls()
+    server.login('yours email','pass')
+    server.close()
 
 
 
@@ -115,7 +122,22 @@ if __name__ == "__main__":
                 # print(results)
                 speak(results)
             
-            
+        elif "where i am" in query:
+            speak("wait sir, let me check")   
+            try:
+                ipAdd = requests.get('https://api.ipify.org').text
+                print(ipAdd)
+                url = 'https://get.geojs.io/v1/ip/geo/'+ipAdd+'.json'
+                geo_requests = requests.get(url)
+                geo_data = geo_requests.json()
+                #print(geo_data)
+                city = geo_data['city']
+                #state = geo_data['state']
+                country = geo_data['country']
+                speak(f"sir i am not sure but i think we are in (city) of (country) country")
+            except Exception as e:
+                speak("sorry sir, due to network issue i am not able to find where we are")
+                pass
             
         elif 'open facebook' in query:
             webbrowser.register('chrome', None)
@@ -147,8 +169,7 @@ if __name__ == "__main__":
             speak("Okay sir, notepad is opening")
             os.system("start notepad")
             
-                 
-            
+                   
         elif 'close notepad' in query:      
             speak("Okay sir")
             os.system("taskkill /im notepad.exe /f")  
@@ -191,7 +212,7 @@ if __name__ == "__main__":
             try:
                 speak("what should i say?")
                 content = takeCommand().lower()
-                to = "kamblemansing101@gmail.com"
+                to = "enter sender mail id"
                 sendEmail(to,content)
                 speak("Email has been send")
             except Exception as e:
