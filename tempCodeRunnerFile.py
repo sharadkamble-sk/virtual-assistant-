@@ -1,2 +1,1 @@
-
-            # query = query.replace("jarvis","")
+              

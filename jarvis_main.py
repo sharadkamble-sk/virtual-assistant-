@@ -12,8 +12,10 @@ import requests
 from bs4 import BeautifulSoup
 import pywhatkit
 import smtplib
+import pywhatkit as pwt
+import requests
+import pyautogui  
 
- 
  
 # sapi5 it is used to get the voices microsoft speeech
 engin = pyttsx3.init('sapi5')
@@ -31,19 +33,23 @@ def speak(audio):
 
 def wishMe():
     hour = int(datetime.datetime.now().hour)
+    strTime = datetime.datetime.now().strftime("%H:%M")
     if hour >= 0 and hour < 12:
         speak("Good Morning Sir!")
+        speak(f"Sir, the time is {strTime}")
+        
     elif hour >= 12 and hour < 18:
         speak("Good Afternoon Sir")
+        speak(f"Sir, the time is {strTime}")
     else:
         speak("Good Evening sir!")
+        speak(f"Sir, the time is {strTime}")
 
     speak("I am your virtual assistant. Please tell me how may i help you")
 
 
 def takeCommand():
     # It takes microphone input from the user and returns string output
-
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening...")
@@ -62,19 +68,20 @@ def takeCommand():
         return "None"
     return query
 
-def sendEmail(to, content):
-    server = smtplib.SMTP('smtp.gmail.com,587')
-    server.ehlo()
-    server.starttls()
-    server.login('yours email','pass')
-    server.close()
+# def sendEmail(to, content):
+#     server = smtplib.SMTP('smtp.gmail.com,587')
+#     server.ehlo()
+#     server.starttls()
+#     server.login('yours email','pass')
+#     server.close()
 
 
 
 if __name__ == "__main__":
    
+   
     wishMe()
-    
+   
     while True:
         # if 1:
         query = takeCommand().lower()
@@ -85,7 +92,13 @@ if __name__ == "__main__":
             # speak("Okay sir, google is opening")
             from SearchNow import searchGoogle
             searchGoogle(query)
-     
+
+        query = takeCommand().lower()
+        if "set alarm" in query:  
+            from alarm import alarm
+            alarm()
+
+        
                 
                     
         elif 'youtube' in query:
@@ -102,7 +115,9 @@ if __name__ == "__main__":
             speak("Done sir")
             
             # from SearchNow import SearchYoutube   
+        
             # SearchYoutube(query)
+            
         
         elif 'wikipedia' in query:
             # speak('Searching Wikipedia...')
@@ -122,24 +137,9 @@ if __name__ == "__main__":
                 # print(results)
                 speak(results)
             
-        elif "where i am" in query:
-            speak("wait sir, let me check")   
-            try:
-                ipAdd = requests.get('https://api.ipify.org').text
-                print(ipAdd)
-                url = 'https://get.geojs.io/v1/ip/geo/'+ipAdd+'.json'
-                geo_requests = requests.get(url)
-                geo_data = geo_requests.json()
-                #print(geo_data)
-                city = geo_data['city']
-                #state = geo_data['state']
-                country = geo_data['country']
-                speak(f"sir i am not sure but i think we are in (city) of (country) country")
-            except Exception as e:
-                speak("sorry sir, due to network issue i am not able to find where we are")
-                pass
+       
             
-        elif 'open facebook' in query:
+        elif 'open Facebook' in query:
             webbrowser.register('chrome', None)
             webbrowser.open("https://www.facebook.com")
             speak("Okay sir, facebook is opening")
@@ -180,20 +180,21 @@ if __name__ == "__main__":
             os.system("taskkill /im notepad.exe /f")  
             speak("Notepad closed")
             
-        elif "send what'sapp message" in query:  
-            kit.sendwhatmsg("9588415360","this is testing protocol",2,24)   
+        elif "send whatsapp message" in query:  
+            pwt.sendwhatmsg("+919588415360","this is testing protocol",0 ,2 )   
              
              
-        elif 'open camera' in query:
-            cap = cv2.VideoCapture(0)
-            while True:
-                ret, img = cap.read()
-                cv2.imshow('webcam',img)
-                k = cv2.waitKey(50)
-                if k==27:
-                    break
-            cap.release()
-            cv2.destroyAllWindows()    
+        # elif 'open camera' or 'webcam' in query:
+        #     cap = cv2.VideoCapture(0)
+        #     while True:
+        #         ret, img = cap.read()
+        #         cv2.imshow('webcam',img)
+        #         k = cv2.waitKey(50)
+        #         if k==27:
+        #             break
+        #     cap.release()
+        #     cv2.destroyAllWindows()    
+            
         elif "ip address" in query:
               ip = get('https://api.ipify.org').text  
               speak(f"sir your IP address is {ip}")
@@ -201,6 +202,7 @@ if __name__ == "__main__":
         elif "temperature in" in query:    
             Temperature() 
         elif "temperature" in query:
+              IP_Address = get('https://api.ipify.org').text
               search = "temperature"
               url = f"https://www.google.com/search?q={search}"
               r = requests.get(url)
@@ -219,11 +221,124 @@ if __name__ == "__main__":
                 print(e)
                 speak("sorry sir, i am not able to send ")
                 
+        elif "send whatsapp messag" in query:
+            pwt.sendwhatmsg("+9588415360","hello")
+                   
                 
+                                
+        #      # Download the helper library from https://www.twilio.com/docs/python/install
+             
+        # elif "send message" in query:
+        #         import os
+        #         from twilio.rest import Client
+
+
+        #         # Find your Account SID and Auth Token at twilio.com/console
+        #         # and set the environment variables. See http://twil.io/secure
+        #         account_sid = os.environ['ACb2a03da59675d0c0f2d8c1d8ab3d300f']
+        #         auth_token = os.environ['9faa98948d1a483022f1b200ca35acd3']
+        #         client = Client(account_sid, auth_token)
+
+        #         message = client.messages \
+        #             .create(
+        #                 body='This text message is from your friend sharad for a testing purpose',
+        #                 from_='+18158624742',
+        #                 to='+917030327453'
+        #             )
+        #         print(message.sid)    
+             
+    # # Import modules
+    #             import smtplib, ssl
+
+    #             # Please replace below with your email address and password
+    #             email_from = 'sender_email@gmail.com'
+    #             password = 'xxx'
+    #             email_to = 'receiver_email@gmail.com'
+
+    #             # Plain Text string as the email message
+    #             email_string = 'This is a test email sent by Python.'
+
+    #             # Connect to the Gmail SMTP server and Send Email
+    #             # Create a secure default settings context
+    #             context = ssl.create_default_context()
+    #             # Connect to Gmail's SMTP Outgoing Mail server with such context
+    #             with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+    #                 # Provide Gmail's login information
+    #                 server.login(email_from, password)
+    #                 # Send mail with from_addr, to_addrs, msg, which were set up as variables above
+    #                 server.sendmail(email_from, email_to, email_string)
+                                    
+                
+        # elif "how much power left" in query or "how much power we have" or "battery" in query:
+        #     import psutil
+        #     battery = psutil.sensors_battery()
+        #     percentage = battery.percent
+        #     speak(f"sir our system have {percentage} percentage battery")   
+        #     break
+        
+        # elif 'current' in query:
+
+        #         # g = geocoder.ip('me')
+        #         # self.speak(g.latlng)
+
+        #         send_url = "http://api.ipstack.com/check?access_key=7da92f317c51e1d9f8da7290b9bb4f84"
+        #         geo_req = requests.get(send_url)
+        #         geo_json = json.loads(geo_req.text)
+        #         lat = geo_json['latitude']
+        #         long = geo_json['longitude']
+        #         city = geo_json['city']
+        #         query.speak("Your location is in ")
+        #         query.speak(city)
+        #         print(city)
+        #         webbrowser.open("https://www.google.nl/maps/place/" + city + "")
+        #         # print(lat)
+        #         # print(long)
+        #         query.speak(lat)
+        #         query.speak(long)
+        #         query.sleep(5)   
+        
+        elif "where i am" in query:
+            speak("wait sir, let me check")   
+            try:
+                op = "https://goo.gl/maps/sYZjV2QXCsNy4oDX8"
+                webbrowser.open(op)
+                ipAdd = requests.get('https://api.ipify.org').text
+                print(ipAdd)
+                url = 'https://get.geojs.io/v1/ip/geo/'+ipAdd+'.json'
+                geo_requests = requests.get(url)
+                geo_data = geo_requests.json()
+                #print(geo_data)
+                city = geo_data['city']
+                #state = geo_data['state']
+                country = geo_data['country']
+                speak(f"sir i am not sure but i think we are in {city} of {country} country")
+            except Exception as e:
+                speak("sorry sir, due to network issue i am not able to find where we are")
+                pass
+        
+
+        elif "volume up" in query:
+            pyautogui.press("volumeup")
+            
+        elif "volume down" in query:
+            pyautogui.press("volumedown")    
+        
+        elif "volume mute" in query:
+            pyautogui.press("volumemute")         
+            
+       
+        elif 'news' in query:
+                news = webbrowser.open_new_tab("https://timesofindia.indiatimes.com")
+                speak("Here are some news...")
+                time.sleep(5)
               
               
-              
-              
+        elif 'location' in query:
+            speak('What is the location?')
+            location = takeCommand()
+            url = 'https://google.nl/maps/place/' + location + '/&amp;'
+            webbrowser.get('chrome').open_new_tab(url)
+            speak('Here is the location ' + location)      
               
         #conversations  
         
@@ -243,7 +358,7 @@ if __name__ == "__main__":
         elif "wake up" in query:
             
             strTime = datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"it's {strTime}")
+            speak(f"sir it's {strTime}")
             speak("I am ready sir, please tell me what can i do for you?")   
                   
         elif 'go to sleep' in query:
